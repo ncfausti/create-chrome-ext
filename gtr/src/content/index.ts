@@ -12,9 +12,12 @@ iframe.style.display = 'none';
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-      console.log("content.js got a message from popup.js")
-      console.log(request);
-      console.log(sender);
+      if (request.message === 'show') {
+        iframe.style.display = 'block';
+      }
+      else {
+        iframe.style.display = 'none';
+      }
   }
 );
 
