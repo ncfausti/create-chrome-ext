@@ -20,6 +20,14 @@ export default defineManifest({
     service_worker: 'src/background/index.ts',
     type: 'module',
   },
+  commands: {
+    "toggle-app": {
+      "suggested_key": {
+        "default": "Ctrl+U"
+      },
+      "description": "Toggle the app"
+    }
+  },
   content_scripts: [
     {
       matches: ['http://*/*', 'https://*/*'],
