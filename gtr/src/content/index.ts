@@ -6,7 +6,7 @@ const iframe = document.createElement('iframe');
 // as opposed to the chrome extension window bc the chrome extension window
 // functions as a Chrome Browser window and thus doe not allow for transparent views
 iframe.src = 'http://localhost:3001';
-iframe.id = 'parcl-labs-map';
+iframe.id = 'map-app-xyz';
 document.body.appendChild(iframe);
 iframe.style.position = "absolute";
 iframe.style.top = '0px';
@@ -31,8 +31,21 @@ chrome.runtime.onMessage.addListener(
       return true;
   }
 );
+const area = (boundingRect: {height: number, width: number}) => boundingRect.height * boundingRect.width;
+const [hostMap] = Array.from(document.getElementsByTagName('iframe')).filter(
+  el => el.id !== 'map-app-xyz' && area(el.getBoundingClientRect()) > 500);
+console.log(hostMap);
 
+// I should be able to create custom events for both of these instead of
+// polling via setInterval:
+
+// listen for changes to url to get lat, lng, and zoom changes
 var previousSearch = window.location.search;
+
+// listen for changes to boundingbox
+var mapRect = hostMap.getBoundingClientRect();
+var previousMapArea = area(mapRect);
+var [previousMapX, previousMapY] = [mapRect.x, mapRect.y];
 
 setInterval(function() {
   if (window.location.search !== previousSearch) {
@@ -40,7 +53,27 @@ setInterval(function() {
     previousSearch = window.location.search;
     console.log(previousSearch);
     console.log()
+
+    // update overlay map coords and zoom here
   }
+
+  var checkRect = hostMap.getBoundingClientRect();
+  if (area(checkRect) !== previousMapArea) {
+    previousMapArea = area(checkRect);
+    console.log("map size changed:")
+    console.log(checkRect.height, checkRect.width);
+
+    // update overlay map height & width here
+  }
+
+  if (checkRect.x !== previousMapX || checkRect.y !== previousMapY) {
+    previousMapX = checkRect.x;
+    previousMapY = checkRect.y;
+    console.log("map position changed:")
+    console.log(checkRect.x, checkRect.y);
+    // update overlay map x, y position on page here
+  }
+
 }, 500);
 
 // How can I have separate controls (or intercept the controls

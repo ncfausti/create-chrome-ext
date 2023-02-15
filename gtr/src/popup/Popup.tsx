@@ -17,7 +17,7 @@ function App() {
 
   return (
     <main>
-      <h3>Popup Page!!!</h3>
+      <h3>Popup Page!</h3>
 
       <h6>v 0.0.1</h6>
       {toggle && <button onClick={e => {setToggle(false); send_message_to_active_tab('show')}}>Show</button>}
